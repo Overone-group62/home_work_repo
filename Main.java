@@ -75,7 +75,7 @@ public class Main {
         } catch (InputMismatchException e) {
             System.out.println("Введите число");
         }
-    }
+        }
         // write your code here
     }
 }
