@@ -1,46 +1,81 @@
-package com.company;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) {
-        String[] typeEvent = {"День рождения","Свадьба","Новый год"};
-        String[] typeTemplate = {"вертикальная", "горизонтальная", "круглая"};
-        String[] typePoscard = {"аудио", "видео", "изображение"};
-        String[] customerData = new String[4];
+        boolean flag = true;
 
-        Scanner in = new Scanner(System.in);
+        while (flag) {
+            Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Добрый день! Выберетите тип праздника");
-        for(int i=0; i<typeEvent.length; i++) {
-            System.out.println("Нажмите "+i+" если вы хотие выбрать "+typeEvent[i]+"; ");
+        System.out.println("Введите целое число в консоли");
+        try {
+            //вводим с кансоли число в формате String:
+            String number = scanner.nextLine();
+
+            //Из введенной строки убираем все символы кроме цифр и мат.действой (+,-,*):
+            number= number.replaceAll("[^0-9,+,*,-]", "");
+
+            //разбиваем строку на массив символов типа char:
+            char[] symbolsArray = number.toCharArray();
+
+            //преобразуем массив сиволов в arrayList типа String с преобразованием char в String:
+            List<String> symbols = new ArrayList<>();
+            for (char c:symbolsArray) {
+                symbols.add(Character.toString(c));
+            }
+
+            //разбиваем список символов на 2 одельных списка (с мат.знаками и с числами):
+            String tempNumber = "";
+            String temp;
+            List<String> numbersList = new ArrayList<>(); //новый список с числами
+            List<String> singsList = new ArrayList<>(); //новый список с матеиматическими знаками (+-*)
+            while (!symbols.isEmpty()) { //пока список не пуст
+                if (symbols.get(0).equals("+")||symbols.get(0).equals("-")||symbols.get(0).equals("*")){
+                    singsList.add(symbols.get(0));
+                    symbols.remove(0);
+                    numbersList.add(tempNumber);
+                    tempNumber = "";
+                } else {
+                    tempNumber = tempNumber+symbols.get(0);
+                    symbols.remove(0);
+                }
+            }
+            numbersList.add(tempNumber);
+
+            //Проводим матиматические вычисления
+            while (!singsList.isEmpty()){ // пока список мат.знаков не пуст
+                int result = 0;
+                switch (singsList.get(0)){
+                    case "+":
+                        result = Integer.parseInt(numbersList.get(0))+Integer.parseInt(numbersList.get(1)); //складываем 2 первых элемента списка с числами
+                        numbersList.remove(0); // удаляем первый (нуливой) элемент
+                        numbersList.set(0,Integer.toString(result)); // заменяем первый (нклевой) элемен на результат вычислений
+                        singsList.remove(0);
+                        break;
+                    case "-": // то же для -
+                        result = Integer.parseInt(numbersList.get(0))-Integer.parseInt(numbersList.get(1));
+                        numbersList.remove(0);
+                        numbersList.set(0,Integer.toString(result));
+                        singsList.remove(0);
+                        break;
+                    case "*": // то же для *
+                        result = Integer.parseInt(numbersList.get(0))*Integer.parseInt(numbersList.get(1));
+                        numbersList.remove(0);
+                        numbersList.set(0,Integer.toString(result));
+                        singsList.remove(0);
+                        break;
+                }
+            }
+
+            System.out.println("Ваше число " + numbersList.get(0));
+            flag = false;
+        } catch (InputMismatchException e) {
+            System.out.println("Введите число");
         }
-        int numberEvent  = in.nextInt();
-        customerData[0] = typeEvent[numberEvent];
-
-
-        System.out.println("Выберетите тип открытки");
-        for(int i=0; i<typeTemplate.length; i++) {
-            System.out.println("Нажмите "+i+" если вы хотие выбрать "+typeTemplate[i]+"; ");}
-        int numberTemplate = in.nextInt();
-        customerData[1] =typeTemplate[numberTemplate];
-
-
-        System.out.println("Введите номер телефона получателя");
-        customerData[2] =in.next();
-
-        System.out.println("Выберетите тип услуги");
-        for(int i=0; i<typePoscard.length; i++) {
-            System.out.println("Нажмите "+i+" если вы хотие выбрать "+typePoscard[i]+"; ");}
-        int numberPoscard = in.nextInt();
-        customerData[3] =typePoscard[numberPoscard];
-
-
-        System.out.println("Ваш заказ: ");
-        for(int i=0; i<customerData.length; i++) {
-            System.out.print(customerData[i]+"; ");
-        }
-        System.out.println("");
-        System.out.println("С вас 5$");// write your code here
+    }
+        // write your code here
     }
 }
